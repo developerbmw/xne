@@ -2,9 +2,10 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">{{ $account->name }}</h2>
+    <h2 class="mb-4">Account Details</h2>
+    <strong>{{ __('Name:') }}</strong> {{ $account->name }}<br>
     <strong>{{ __('Type:') }}</strong> {{ $account->type_name }}<br>
-    <strong>{{ __('Balance:') }}</strong> {{ $account->balance }}<br>
+    <strong>{{ __('Balance:') }}</strong> {{ fc($account->balance) }}<br>
     <div class="mt-4 mb-1">{{ __('Journal Entries') }}</div>
     <table class="table table-striped table-sm table-hover">
         <thead>
@@ -19,7 +20,7 @@
                 <tr data-href="{{ route('transactions.show', $entry->transaction_id) }}">
                     <td>{{ $entry->date->format('d/m/Y') }}</td>
                     <td>{{ $entry->description }}</td>
-                    <td>{{ $entry->amount }}</td>
+                    <td>{{ fc($entry->amount) }}</td>
                 </tr>
             @endforeach
         </tbody>

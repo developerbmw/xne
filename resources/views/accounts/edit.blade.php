@@ -19,17 +19,7 @@
                 </div>
                 <div class="form-group row">
                     <label for="selectType" class="col-sm-2 col-form-label">{{ __('Type') }}</label>
-                    <div class="col-sm-10">
-                        <select name="type" class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}">
-                            <option></option>
-                            @foreach ($accountTypes as $code => $name)
-                                <option value="{{ $code }}" {{ old('type', $account->type) == $code ? 'selected' : '' }}>{{ $name }}</option>
-                            @endforeach
-                        </select>
-                        @if ($errors->has('type'))
-                            <div class="invalid-feedback">{{ $errors->first('type') }}</div>
-                        @endif
-                    </div>
+                    <div class="col-sm-10 form-control-plaintext">{{ $account->type_name }}</div>
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-12">

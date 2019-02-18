@@ -46,6 +46,11 @@ class Account extends Model
         }
     }
 
+    public function getBalanceAttribute($value)
+    {
+        return round($value, 2);
+    }
+
     public function getTypeNameAttribute()
     {
         return self::getTypeName($this->type);
@@ -74,8 +79,8 @@ class Account extends Model
         }
     }
 
-    public function journalEntries()
+    public function isCredit()
     {
-        return $this->hasMany(JournalEntry::class);
+        return !$this->isDebit();
     }
 }

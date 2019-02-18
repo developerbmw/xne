@@ -25,7 +25,10 @@ class AccountsController extends Controller
 
     public function store(Request $request)
     {
-        $this->validateAccount($request);
+        $request->validate([
+            'name' => 'required|string|min:3|unique:accounts,name',
+            'type' => 'required|integer|in:' . implode(',', array_keys(Account::getTypes()))
+        ]);
 
         $account = new Account;
         $account->name = $request->name;
@@ -66,11 +69,12 @@ class AccountsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validateAccount($request);
+        $request->validate([
+            'name' => 'required|string|min:3|unique:accounts,name,' . $id
+        ]);
 
         $account = Account::findOrFail($id);
         $account->name = $request->name;
-        $account->type = $request->type;
         $account->save();
 
         return redirect()->route('accounts.show', $account)->with(['success' => __('Account updated.')]);
@@ -79,15 +83,5 @@ class AccountsController extends Controller
     public function destroy($id)
     {
 
-    }
-
-    private function validateAccount(Request $request)
-    {
-        $validTypes = implode(',', array_keys(Account::getTypes()));
-
-        $request->validate([
-            'name' => 'required|string|min:3|unique:accounts,name',
-            'type' => 'required|integer|in:' . $validTypes
-        ]);
     }
 }

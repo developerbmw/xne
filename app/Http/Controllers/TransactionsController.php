@@ -45,14 +45,12 @@ class TransactionsController extends Controller
 
                 $account = Account::lockForUpdate()->findOrFail($entry['account']);
 
-                if ($entry['debit'] && $entry['debit'] > 0) {
-                    $amount = $entry['debit'];
+                if ($entry['debit'] && $entry['debit'] > 0.0) {
+                    $amount = ($account->isDebit() ? 1.0 : -1.0) * $entry['debit'];
+                } else if ($entry['credit'] && $entry['credit'] > 0.0) {
+                    $amount = ($account->isCredit() ? 1.0 : -1.0) * $entry['credit'];
                 } else {
-                    $amount = -1 * $entry['credit'];
-                }
-
-                if (!$account->isDebit()) {
-                    $amount *= -1;
+                    continue;
                 }
 
                 $account->balance += $amount;
@@ -71,7 +69,12 @@ class TransactionsController extends Controller
 
     public function show($id)
     {
+        $transaction = Transaction::findOrFail($id);
 
+        return view('transactions.show', [
+            'transaction' => $transaction,
+            'journalEntries' => $transaction->journalEntries()->paginate(20)
+        ]);
     }
 
     public function edit($id)
@@ -99,21 +102,32 @@ class TransactionsController extends Controller
         ]);
 
         $balance = 0.0;
+        $entryCount = 0;
 
         foreach ($request->entries as $entry) {
             if (!$entry['account']) {
                 continue;
+            } else if ($entry['debit'] && $entry['debit'] > 0.0) {
+                $balance += $entry['debit'];
+            } else if ($entry['credit'] && $entry['credit'] > 0.0) {
+                $balance -= $entry['credit'];
+            } else {
+                continue;
             }
 
-            if ($entry['debit'] && $entry['debit'] > 0) {
-                $balance += $entry['debit'];
-            } else if ($entry['credit']) {
-                $balance -= $entry['credit'];
-            }
+            ++$entryCount;
         }
 
-        if ($balance != 0) {
-            return redirect()->back()->withInput()->with('error', 'Total debits do not match total credits.');
+        $error = null;
+
+        if ($entryCount < 2) {
+            $error = __('You must enter at least two journal entries for the transaction.');
+        } else if ($balance != 0) {
+            $error = __('Total debits do not match total credits.');
+        }
+
+        if ($error) {
+            return redirect()->back()->withInput()->with('error', $error);
         }
 
         return null;

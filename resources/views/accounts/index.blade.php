@@ -16,7 +16,7 @@
                 <tr data-href="{{ route('accounts.show', $account) }}">
                     <td>{{ $account->name }}</td>
                     <td>{{ $account->type_name }}</td>
-                    <td>{{ $account->balance }}</td>
+                    <td>{{ fc($account->balance) }}</td>
                 </tr>
             @endforeach
         </tbody>
