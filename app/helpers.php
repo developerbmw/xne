@@ -1,5 +1,5 @@
 <?php
 
 function fc($value) {
-    return number_format($value, 2);
+    return '$' . number_format($value, 2);
 }
