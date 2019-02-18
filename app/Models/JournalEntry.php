@@ -16,20 +16,15 @@ class JournalEntry extends Model
         return $this->belongsTo(Account::class);
     }
 
-    public function getAmountAttribute($value)
-    {
-        return round($value, 2);
-    }
-
     public function getDebitAmountAttribute()
     {
         if ($this->account->isDebit()) {
             if ($this->amount >= 0.0) {
-                return round($this->amount, 2);
+                return $this->amount;
             }
         } else if ($this->account->isCredit()) {
             if ($this->amount < 0.0) {
-                return round(-1.0 * $this->amount, 2);
+                return -1.0 * $this->amount;
             }
         }
 
@@ -40,11 +35,11 @@ class JournalEntry extends Model
     {
         if ($this->account->isCredit()) {
             if ($this->amount >= 0.0) {
-                return round($this->amount, 2);
+                return $this->amount;
             }
         } else if ($this->account->isDebit()) {
             if ($this->amount < 0.0) {
-                return round(-1.0 * $this->amount, 2);
+                return -1.0 * $this->amount;
             }
         }
 

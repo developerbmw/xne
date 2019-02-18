@@ -46,11 +46,6 @@ class Account extends Model
         }
     }
 
-    public function getBalanceAttribute($value)
-    {
-        return round($value, 2);
-    }
-
     public function getTypeNameAttribute()
     {
         return self::getTypeName($this->type);
