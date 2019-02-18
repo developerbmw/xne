@@ -2,7 +2,12 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Account Details</h2>
+    <div class="row mb-4">
+        <h2 class="col-sm-6">{{ __('Account Details') }}</h2>
+        <div class="col-sm-6 text-right">
+            <a href="{{ route('accounts.edit', $account) }}" class="btn btn-primary">{{ __('Edit') }}</a>
+        </div>
+    </div>
     <strong>{{ __('Name:') }}</strong> {{ $account->name }}<br>
     <strong>{{ __('Type:') }}</strong> {{ $account->type_name }}<br>
     <strong>{{ __('Balance:') }}</strong> {{ fc($account->balance) }}<br>

@@ -2,7 +2,12 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">Transaction Details</h2>
+    <div class="row mb-4">
+        <h2 class="col-sm-6">{{ __('Transaction Details') }}</h2>
+        <div class="col-sm-6 text-right">
+            <a href="{{ route('transactions.edit', $transaction) }}" class="btn btn-primary">{{ __('Edit') }}</a>
+        </div>
+    </div>
     <strong>{{ __('Description:') }}</strong> {{ $transaction->description }}<br>
     <strong>{{ __('Date:') }}</strong> {{ $transaction->date->format('d/m/Y') }}<br>
     <div class="mt-4 mb-1">{{ __('Journal Entries') }}</div>
@@ -18,8 +23,8 @@
             @foreach ($journalEntries as $entry)
                 <tr>
                     <td>{{ $entry->account->name }}</td>
-                    <td>{{ fc($entry->debit_amount) }}</td>
-                    <td>{{ fc($entry->credit_amount) }}</td>
+                    <td>{{ $entry->debit_amount ? fc($entry->debit_amount) : '' }}</td>
+                    <td>{{ $entry->credit_amount ? fc($entry->credit_amount) : '' }}</td>
                 </tr>
             @endforeach
         </tbody>
