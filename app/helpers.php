@@ -1,5 +1,12 @@
 <?php
 
 function fc($value) {
-    return '$' . number_format($value, 2);
+    $symbol = '$';
+
+    if ($value < 0.0) {
+        $symbol = '-$';
+        $value *= -1.0;
+    }
+
+    return $symbol . number_format($value, 2);
 }

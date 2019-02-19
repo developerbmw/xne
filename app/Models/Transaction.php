@@ -10,6 +10,6 @@ class Transaction extends Model
 
     public function journalEntries()
     {
-        return $this->hasMany(JournalEntry::class);
+        return $this->hasMany(JournalEntry::class)->orderBy('id');
     }
 }

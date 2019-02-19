@@ -89,24 +89,27 @@
 </div>
 
 <script>
-    function deleteRow() {
-        if ($('#entries tbody tr').length == 1) {
-            return;
-        }
+    $('document').ready(function() {
+        function deleteRow() {
+            if ($('#entries tbody tr').length == 1) {
+                return;
+            }
 
-        $(this).parent().parent().remove();
-    }
-    var index = 3;
-    $('#addEntry').click(function() {
-        var newRow = $('#entries tbody tr').first().clone();
-        newRow.find('input').val(null);
-        newRow.find('.oi-trash').click(deleteRow);
-        var inputs = newRow.find('select, input');
-        inputs.eq(0).prop('name', 'entries[' + index + '][account]');
-        inputs.eq(1).prop('name', 'entries[' + index + '][debit]');
-        inputs.eq(2).prop('name', 'entries[' + index++ + '][credit]');
-        $('#entries tbody').append(newRow);
+            $(this).parent().parent().remove();
+        }
+        var index = 3;
+        $('#addEntry').click(function() {
+            var newRow = $('#entries tbody tr').first().clone();
+            newRow.find('input').val(null);
+            newRow.find('option').removeAttr('selected');
+            newRow.find('.oi-trash').click(deleteRow);
+            var inputs = newRow.find('select, input');
+            inputs.eq(0).prop('name', 'entries[' + index + '][account]');
+            inputs.eq(1).prop('name', 'entries[' + index + '][debit]');
+            inputs.eq(2).prop('name', 'entries[' + index++ + '][credit]');
+            $('#entries tbody').append(newRow);
+        });
+        $('.oi-trash').click(deleteRow);
     });
-    $('.oi-trash').click(deleteRow);
 </script>
 @endsection

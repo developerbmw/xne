@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($journalEntries as $entry)
+            @foreach ($transaction->journalEntries as $entry)
                 <tr>
                     <td>{{ $entry->account->name }}</td>
                     <td>{{ $entry->debit_amount ? fc($entry->debit_amount) : '' }}</td>
@@ -29,6 +29,5 @@
             @endforeach
         </tbody>
     </table>
-    {{ $journalEntries->links() }}
 </div>
 @endsection

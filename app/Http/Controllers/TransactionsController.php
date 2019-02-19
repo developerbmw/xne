@@ -62,29 +62,83 @@ class TransactionsController extends Controller
                 $journalEntry->amount = $amount;
                 $journalEntry->save();
             }
-        });
+        }, 3);
 
         return redirect()->route('transactions.index')->with(['success' => __('Transaction created.')]);
     }
 
     public function show($id)
     {
-        $transaction = Transaction::findOrFail($id);
-
         return view('transactions.show', [
-            'transaction' => $transaction,
-            'journalEntries' => $transaction->journalEntries()->paginate(20)
+            'transaction' => Transaction::findOrFail($id)
         ]);
     }
 
     public function edit($id)
     {
-
+        return view('transactions.edit', [
+            'transaction' => Transaction::findOrFail($id),
+            'accounts' => Account::orderBy('type')->orderBy('name')->get()
+        ]);
     }
 
     public function update(Request $request, $id)
     {
+        $result = $this->validateTransaction($request);
 
+        if ($result) {
+            return $result;
+        }
+
+        DB::transaction(function() use(&$request, $id) {
+            $transaction = Transaction::sharedLock()->findOrFail($id);
+            $transaction->date = $request->date;
+            $transaction->description = $request->description;
+            $transaction->save();
+
+            $entryIds = [];
+
+            foreach ($request->entries as $entry) {
+                if (!$entry['account']) {
+                    continue;
+                }
+
+                if ($entry['id']) {
+                    $journalEntry = JournalEntry::lockForUpdate()->findOrFail($entry['id']);
+                    $account = $journalEntry->account()->lockForUpdate()->first();
+                    $account->balance -= $journalEntry->amount;
+                    $account->save();
+                } else {
+                    $journalEntry = new JournalEntry;
+                    $journalEntry->transaction()->associate($transaction);
+                }
+
+                $account = Account::lockForUpdate()->findOrFail($entry['account']);
+
+                if ($entry['debit'] && $entry['debit'] > 0.0) {
+                    $amount = ($account->isDebit() ? 1.0 : -1.0) * $entry['debit'];
+                } else if ($entry['credit'] && $entry['credit'] > 0.0) {
+                    $amount = ($account->isCredit() ? 1.0 : -1.0) * $entry['credit'];
+                } else {
+                    continue;
+                }
+
+                $account->balance += $amount;
+                $account->save();
+
+                $journalEntry->account()->associate($account);
+                $journalEntry->amount = $amount;
+                $journalEntry->save();
+                $entryIds[] = $journalEntry->id;
+            }
+
+            $transaction->journalEntries()->whereNotIn('id', $entryIds)->get()->each(function($entry) {
+                $entry->account()->update(['balance' => DB::raw('balance - ' . $entry->amount)]);
+                $entry->delete();
+            });
+        }, 3);
+
+        return redirect()->route('transactions.show', $id)->with(['success' => __('Transaction updated.')]);
     }
 
     public function destroy($id)

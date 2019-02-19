@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4">{{ $account->name }}</h2>
+    <h2 class="mb-4">{{ __('Edit Account') }}</h2>
     <div class="row">
         <div class="col-md-6">
             <form method="post" action="{{ route('accounts.update', $account) }}">
