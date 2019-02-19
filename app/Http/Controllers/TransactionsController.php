@@ -133,7 +133,9 @@ class TransactionsController extends Controller
             }
 
             $transaction->journalEntries()->whereNotIn('id', $entryIds)->get()->each(function($entry) {
-                $entry->account()->update(['balance' => DB::raw('balance - ' . $entry->amount)]);
+                $account = $entry->account()->lockForUpdate()->first();
+                $account->balance -= $entry->amount;
+                $account->save();
                 $entry->delete();
             });
         }, 3);
