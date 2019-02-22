@@ -78,4 +78,9 @@ class Account extends Model
     {
         return !$this->isDebit();
     }
+
+    public function journalEntries()
+    {
+        return $this->hasMany(JournalEntry::class);
+    }
 }

@@ -77,11 +77,20 @@ class AccountsController extends Controller
         $account->name = $request->name;
         $account->save();
 
-        return redirect()->route('accounts.show', $account)->with(['success' => __('Account updated.')]);
+        return redirect()->route('accounts.show', $account)->with('success', __('Account updated.'));
     }
 
     public function destroy($id)
     {
+        $account = Account::findOrFail($id);
 
+        if ($account->journalEntries()->count() > 0) {
+            return redirect()->route('accounts.show', $id)
+                ->with('error', __('This account cannot be deleted as it has transactions associated with it.'));
+        }
+
+        $account->delete();
+
+        return redirect()->route('accounts.index')->with('success', __('Account deleted.'));
     }
 }

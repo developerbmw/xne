@@ -31,7 +31,7 @@ class CreateAppTables extends Migration
         Schema::create('journal_entries', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('transaction_id')->unsigned();
-            $table->foreign('transaction_id')->references('id')->on('transactions');
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->integer('account_id')->unsigned();
             $table->foreign('account_id')->references('id')->on('accounts');
             $table->decimal('amount', 16, 2);

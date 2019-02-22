@@ -6,6 +6,13 @@
         <h2 class="col-sm-6">{{ __('Account Details') }}</h2>
         <div class="col-sm-6 text-right">
             <a href="{{ route('accounts.edit', $account) }}" class="btn btn-primary">{{ __('Edit') }}</a>
+            @if ($account->journalEntries()->count() == 0)
+                <form method="post" action="{{ route('accounts.destroy', $account) }}" style="display: inline-block">
+                    @method('DELETE')
+                    @csrf
+                    <button type="submit" class="btn btn-danger" title="{{ __('This account can be deleted as it has no transactions') }}">Delete</button>
+                </form>
+            @endif
         </div>
     </div>
     <strong>{{ __('Name:') }}</strong> {{ $account->name }}<br>

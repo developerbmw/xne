@@ -6,6 +6,11 @@
         <h2 class="col-sm-6">{{ __('Transaction Details') }}</h2>
         <div class="col-sm-6 text-right">
             <a href="{{ route('transactions.edit', $transaction) }}" class="btn btn-primary">{{ __('Edit') }}</a>
+            <form method="post" action="{{ route('transactions.destroy', $transaction) }}" style="display: inline-block">
+                @method('DELETE')
+                @csrf
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
         </div>
     </div>
     <strong>{{ __('Description:') }}</strong> {{ $transaction->description }}<br>

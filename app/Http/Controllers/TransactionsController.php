@@ -91,7 +91,7 @@ class TransactionsController extends Controller
         }
 
         DB::transaction(function() use(&$request, $id) {
-            $transaction = Transaction::sharedLock()->findOrFail($id);
+            $transaction = Transaction::lockForUpdate()->findOrFail($id);
             $transaction->date = $request->date;
             $transaction->description = $request->description;
             $transaction->save();
@@ -145,10 +145,23 @@ class TransactionsController extends Controller
 
     public function destroy($id)
     {
+        DB::transaction(function() use(&$request, $id) {
+            $transaction = Transaction::lockForUpdate()->findOrFail($id);
 
+            $transaction->journalEntries()->get()->each(function($entry) {
+                $account = $entry->account()->lockForUpdate()->first();
+                $account->balance -= $entry->amount;
+                $account->save();
+                $entry->delete();
+            });
+
+            $transaction->delete();
+        }, 3);
+
+        return redirect()->route('transactions.index')->with('success', __('Transaction deleted.'));
     }
 
-    public function validateTransaction(Request $request)
+    private function validateTransaction(Request $request)
     {
         $request->validate([
             'date' => 'required|date_format:Y-m-d',
