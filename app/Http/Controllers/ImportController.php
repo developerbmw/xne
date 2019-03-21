@@ -80,7 +80,7 @@ class ImportController extends Controller
             ++$entryCount;
         }
 
-        if ($entryCount < 2 || $balance != 0) {
+        if ($entryCount < 2 || round($balance, 8) != 0) {
             throw new \Exception('Invalid transaction ' . $date . ' ' . $description);
         }
 

@@ -191,7 +191,7 @@ class TransactionsController extends Controller
 
         if ($entryCount < 2) {
             $error = __('You must enter at least two journal entries for the transaction.');
-        } else if ($balance != 0) {
+        } else if (round($balance, 8) != 0) {
             $error = __('Total debits do not match total credits.');
         }
 
