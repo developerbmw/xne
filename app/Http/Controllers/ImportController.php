@@ -55,7 +55,7 @@ class ImportController extends Controller
                 }
             }, 3);
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Import failed.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
 
         return redirect()->back()->with('success', 'Import completed successfully.');
@@ -81,7 +81,7 @@ class ImportController extends Controller
         }
 
         if ($entryCount < 2 || $balance != 0) {
-            throw new \Exception;
+            throw new \Exception('Invalid transaction ' . $date . ' ' . $description);
         }
 
         $transaction = new Transaction;
@@ -94,7 +94,11 @@ class ImportController extends Controller
                 continue;
             }
 
-            $account = Account::lockForUpdate()->where('name', $entry['account'])->firstOrFail();
+            $account = Account::lockForUpdate()->where('name', $entry['account'])->first();
+
+            if (!$account) {
+                throw new \Exception('Account \'' . $entry['account'] . '\' does not exist.');
+            }
 
             if ($entry['debit'] && $entry['debit'] > 0.0) {
                 $amount = ($account->isDebit() ? 1.0 : -1.0) * $entry['debit'];
