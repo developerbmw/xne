@@ -20,4 +20,7 @@ Route::middleware('auth')->group(function() {
 
     Route::get('profile', 'ProfileController@index')->name('profile.index');
     Route::put('profile', 'ProfileController@update')->name('profile.update');
+
+    Route::get('import', 'ImportController@showImportForm')->name('import.form');
+    Route::post('import', 'ImportController@runImport')->name('import.run');
 });

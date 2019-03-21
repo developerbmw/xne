@@ -75,6 +75,7 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="{{ route('import.form') }}">{{ __('Import Data') }}</a>
                                     <a class="dropdown-item" href="{{ route('profile.index') }}">{{ __('Edit Profile') }}</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
