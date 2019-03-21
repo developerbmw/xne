@@ -45,8 +45,8 @@ class ImportController extends Controller
 
                     $entries[] = [
                         'account' => $row['account'],
-                        'debit' => $row['debit'],
-                        'credit' => $row['credit']
+                        'debit' => str_replace(',', '', $row['debit']),
+                        'credit' => str_replace(',', '', $row['credit'])
                     ];
                 }
 
