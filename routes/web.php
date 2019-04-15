@@ -23,4 +23,7 @@ Route::middleware('auth')->group(function() {
 
     Route::get('import', 'ImportController@showImportForm')->name('import.form');
     Route::post('import', 'ImportController@runImport')->name('import.run');
+
+    Route::get('reports', 'ReportsController@index')->name('reports.index');
+    Route::get('reports/run', 'ReportsController@run')->name('reports.run');
 });

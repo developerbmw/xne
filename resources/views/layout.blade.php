@@ -57,6 +57,9 @@
                                     <a class="dropdown-item" href="{{ route('transactions.create') }}">{{ __('Create') }}</a>
                                 </div>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('reports.index') }}">{{ __('Reports') }}</a>
+                            </li>
                         @endauth
                     </ul>
                     <ul class="navbar-nav ml-auto">
