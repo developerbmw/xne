@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8">
-            <h2>{{ __('Single Account Report') }}</h2>
+            <h2>{{ $account->name }} {{ __('Account Report') }}</h2>
             <h6 class="mb-4">For the period {{ $start->format('d/m/Y') }} - {{ $end->format('d/m/Y') }}</h6>
             {{ __('Opening Balance:') }} {{ fc($openingBalance) }}<br>
             {{ __('Closing Balance:') }} {{ fc($closingBalance) }}<br>
