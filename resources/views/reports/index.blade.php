@@ -7,13 +7,26 @@
         <div class="form-group row">
             <label for="selectReport" class="col-sm-2 col-form-label">{{ __('Report') }}</label>
             <div class="col-md-4">
-                <select name="report" class="form-control {{ $errors->has('report') ? 'is-invalid' : '' }}">
+                <select id="selectReport" name="report" class="form-control {{ $errors->has('report') ? 'is-invalid' : '' }}">
                     @foreach ($reports as $name)
                         <option {{ old('report') == $name ? 'selected' : '' }}>{{ $name }}</option>
                     @endforeach
                 </select>
                 @if ($errors->has('report'))
                     <div class="invalid-feedback">{{ $errors->first('report') }}</div>
+                @endif
+            </div>
+        </div>
+        <div id="selectAccountDiv" class="form-group row">
+            <label for="selectAccount" class="col-sm-2 col-form-label">{{ __('Account') }}</label>
+            <div class="col-md-4">
+                <select id="selectAccount" name="account" class="form-control {{ $errors->has('account') ? 'is-invalid' : '' }}">
+                    @foreach ($accounts as $account)
+                        <option value="{{ $account->id }}" {{ old('account') == $account->id ? 'selected' : '' }}>{{ $account->name }}</option>
+                    @endforeach
+                </select>
+                @if ($errors->has('account'))
+                    <div class="invalid-feedback">{{ $errors->first('account') }}</div>
                 @endif
             </div>
         </div>
@@ -42,4 +55,19 @@
         </div>
     </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+        function updateForm() {
+            if ($('#selectReport').val() == 'Single Account') {
+                $('#selectAccountDiv').show();
+            } else {
+                $('#selectAccountDiv').hide();
+            }
+        }
+
+        $('#selectReport').change(updateForm);
+        updateForm();
+    });
+</script>
 @endsection
