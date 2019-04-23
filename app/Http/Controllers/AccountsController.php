@@ -47,6 +47,7 @@ class AccountsController extends Controller
             ->where('account_id', $account->id)
             ->select('transaction_id', 'date', 'description', 'amount')
             ->orderBy('date', 'desc')
+            ->orderBy('transactions.created_at', 'desc')
             ->paginate(20);
 
         $journalEntries->each(function($entry) {
